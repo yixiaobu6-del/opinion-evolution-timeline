@@ -1,0 +1,348 @@
+{
+  "topics": [
+    {
+      "id": "topic_001",
+      "topic": "远程办公",
+      "description": "对远程办公模式的态度和看法演变",
+      "timeline": [
+        {
+          "date": "2020-02-01",
+          "position": 3,
+          "statement": "远程办公效率低下，还是需要面对面沟通。",
+          "context": "疫情初期被迫远程办公时的焦虑感",
+          "confidence": 6,
+          "source": "团队会议发言"
+        },
+        {
+          "date": "2020-06-15",
+          "position": 5,
+          "statement": "远程办公有一些优势，比如省去了通勤时间。",
+          "context": "适应远程办公3个月后的体验反馈",
+          "confidence": 5,
+          "source": "月度总结"
+        },
+        {
+          "date": "2021-01-10",
+          "position": 6,
+          "statement": "混合办公可能是最佳模式，兼顾灵活性和协作效率。",
+          "context": "经过一年实践后的反思",
+          "confidence": 7,
+          "source": "博客文章"
+        },
+        {
+          "date": "2021-09-20",
+          "position": 8,
+          "statement": "远程办公是未来的趋势，企业应该全面拥抱。异步沟通可以解决大部分协作问题。",
+          "context": "阅读了多篇关于远程办公的研究报告后的新认知",
+          "confidence": 8,
+          "source": "播客访谈"
+        },
+        {
+          "date": "2023-03-05",
+          "position": 7,
+          "statement": "远程办公优势明显但并非万能，需要根据团队特点设计合适的模式。",
+          "context": "经历多次远程和线下办公切换后的平衡观点",
+          "confidence": 9,
+          "source": "行业分享"
+        }
+      ],
+      "tags": ["工作方式", "技术", "管理"]
+    },
+    {
+      "id": "topic_002",
+      "topic": "人工智能对就业的影响",
+      "description": "对AI替代人类工作这一议题的观点演变",
+      "timeline": [
+        {
+          "date": "2022-05-10",
+          "position": 2,
+          "statement": "AI不可能真正替代人类工作，只是辅助工具。",
+          "context": "最初接触AI应用时的看法",
+          "confidence": 7,
+          "source": "社交网络发文"
+        },
+        {
+          "date": "2022-12-01",
+          "position": 4,
+          "statement": "AI确实会影响某些行业，但新的岗位也会被创造出来。",
+          "context": "看到ChatGPT展示后的思考",
+          "confidence": 6,
+          "source": "日记"
+        },
+        {
+          "date": "2023-04-15",
+          "position": 6,
+          "statement": "AI对就业的影响比预想的更大，我们需要主动适应和学习。",
+          "context": "深度使用AI工具三个月后的体会",
+          "confidence": 7,
+          "source": "公众号文章"
+        },
+        {
+          "date": "2023-09-01",
+          "position": 7,
+          "statement": "关键不是AI会不会取代人，而是会用AI的人会取代不会用AI的人。",
+          "context": "帮助团队引入AI工具后的观察总结",
+          "confidence": 9,
+          "source": "内部分享"
+        },
+        {
+          "date": "2024-06-20",
+          "position": 8,
+          "statement": "AI将从根本上重塑就业结构，教育体系和职业培训需要做出相应变革。",
+          "context": "持续关注AI发展一年后的系统性思考",
+          "confidence": 8,
+          "source": "行业会议演讲"
+        }
+      ],
+      "tags": ["AI", "就业", "社会"]
+    },
+    {
+      "id": "topic_003",
+      "topic": "终身学习的必要性",
+      "description": "对终身学习态度和理念的演变",
+      "timeline": [
+        {
+          "date": "2021-03-01",
+          "position": 4,
+          "statement": "工作之后很难有时间和精力持续学习了。",
+          "context": "工作两年后的倦怠期感受",
+          "confidence": 8,
+          "source": "朋友圈"
+        },
+        {
+          "date": "2021-08-15",
+          "position": 5,
+          "statement": "学习还是要坚持，但需要找到适合自己的节奏。",
+          "context": "开始尝试在线课程后的小有收获",
+          "confidence": 5,
+          "source": "个人博客"
+        },
+        {
+          "date": "2022-04-10",
+          "position": 7,
+          "statement": "只有持续学习才能在快速变化的时代保持竞争力。",
+          "context": "经历公司业务转型后的深刻体会",
+          "confidence": 7,
+          "source": "年度总结"
+        },
+        {
+          "date": "2023-06-20",
+          "position": 9,
+          "statement": "学习不是任务，而是生活方式。每天进步一点点，长期复利效应非常惊人。",
+          "context": "坚持学习两年后看到显著成长",
+          "confidence": 9,
+          "source": "播客访谈"
+        }
+      ],
+      "tags": ["教育", "成长", "习惯"]
+    },
+    {
+      "id": "topic_004",
+      "topic": "996工作制",
+      "description": "对高强度工作文化的态度演变",
+      "timeline": [
+        {
+          "date": "2021-01-15",
+          "position": 5,
+          "statement": "年轻时候拼一拼也正常，毕竟要积累经验。",
+          "context": "刚加入互联网公司时的想法",
+          "confidence": 4,
+          "source": "谈话"
+        },
+        {
+          "date": "2021-09-01",
+          "position": 3,
+          "statement": "996不可持续，长期来看对身心健康都有害。",
+          "context": "经历半年996后的疲惫感受",
+          "confidence": 7,
+          "source": "日记"
+        },
+        {
+          "date": "2022-05-20",
+          "position": 2,
+          "statement": "996本质上是管理懒惰的表现，真正高效的工作不需要这么长时间。",
+          "context": "换了工作环境后的对比反思",
+          "confidence": 8,
+          "source": "知乎回答"
+        },
+        {
+          "date": "2023-08-10",
+          "position": 1,
+          "statement": "坚决反对996，这不仅损害个人健康，从长远看对企业发展也是有害的。",
+          "context": "看到多起过劳案例后的坚定立场",
+          "confidence": 10,
+          "source": "公开文章"
+        }
+      ],
+      "tags": ["工作", "健康", "职场文化"]
+    },
+    {
+      "id": "topic_005",
+      "topic": "知识付费",
+      "description": "对知识付费模式的态度变化",
+      "timeline": [
+        {
+          "date": "2020-10-01",
+          "position": 7,
+          "statement": "知识付费很好，可以帮助系统性地学习。",
+          "context": "刚开始接触知识付费课程时的热情",
+          "confidence": 6,
+          "source": "购买课程后的评价"
+        },
+        {
+          "date": "2021-05-10",
+          "position": 5,
+          "statement": "知识付费产品质量参差不齐，需要仔细筛选。",
+          "context": "购买了几个不太满意的课程后的反思",
+          "confidence": 7,
+          "source": "论坛讨论"
+        },
+        {
+          "date": "2022-03-15",
+          "position": 4,
+          "statement": "大部分知识付费都在贩卖焦虑，真正有价值的内容不多。",
+          "context": "被多个营销课套路后的失望",
+          "confidence": 8,
+          "source": "公众号文章"
+        },
+        {
+          "date": "2023-07-01",
+          "position": 6,
+          "statement": "知识付费本身没有错，关键是选择有深度、有体系的内容，避免碎片化学习。",
+          "context": "学会了辨别优质课程后的理性态度",
+          "confidence": 9,
+          "source": "分享会发言"
+        }
+      ],
+      "tags": ["消费", "教育", "内容"]
+    },
+    {
+      "id": "topic_006",
+      "topic": "社交媒体使用",
+      "description": "对社交媒体价值与负面影响的看法变化",
+      "timeline": [
+        {
+          "date": "2019-06-01",
+          "position": 6,
+          "statement": "社交媒体是连接朋友、获取信息的重要渠道。",
+          "context": "日常使用社交媒体的感受",
+          "confidence": 5,
+          "source": "个人微博"
+        },
+        {
+          "date": "2020-12-15",
+          "position": 4,
+          "statement": "社交媒体占用了太多时间，开始怀疑其价值。",
+          "context": "年度时间统计后的反思",
+          "confidence": 6,
+          "source": "日记"
+        },
+        {
+          "date": "2022-03-20",
+          "position": 3,
+          "statement": "算法推荐让人陷入信息茧房，需要主动打破。",
+          "context": "阅读《过滤气泡》后的思考",
+          "confidence": 7,
+          "source": "读书笔记"
+        },
+        {
+          "date": "2024-01-10",
+          "position": 2,
+          "statement": "有意识地减少社交媒体使用，把时间还给深度阅读和面对面交流。",
+          "context": "实践数字极简主义半年后的体会",
+          "confidence": 9,
+          "source": "年度计划"
+        }
+      ],
+      "tags": ["社交", "健康", "信息"]
+    },
+    {
+      "id": "topic_007",
+      "topic": "个人理财观",
+      "description": "对投资理财的态度和方法演变",
+      "timeline": [
+        {
+          "date": "2020-03-01",
+          "position": 3,
+          "statement": "理财是有钱人的事，月光族谈不上理财。",
+          "context": "刚工作时的理财观念",
+          "confidence": 6,
+          "source": "聊天记录"
+        },
+        {
+          "date": "2021-04-15",
+          "position": 5,
+          "statement": "开始强制储蓄，每月定投指数基金。",
+          "context": "读《穷爸爸富爸爸》后的行动",
+          "confidence": 5,
+          "source": "理财记录"
+        },
+        {
+          "date": "2022-08-10",
+          "position": 7,
+          "statement": "资产配置比选股更重要，分散投资降低风险。",
+          "context": "经历市场波动后的认知升级",
+          "confidence": 7,
+          "source": "投资复盘"
+        },
+        {
+          "date": "2024-02-20",
+          "position": 8,
+          "statement": "长期主义和时间复利才是理财的核心，追求稳定而非暴利。",
+          "context": "持续投资三年后的感悟",
+          "confidence": 9,
+          "source": "播客分享"
+        }
+      ],
+      "tags": ["理财", "投资", "习惯"]
+    },
+    {
+      "id": "topic_008",
+      "topic": "副业创业",
+      "description": "对副业和创业的态度演变",
+      "timeline": [
+        {
+          "date": "2021-02-01",
+          "position": 4,
+          "statement": "副业太累了，主业已经够忙。",
+          "context": "同事邀请一起做副业时的反应",
+          "confidence": 5,
+          "source": "微信聊天"
+        },
+        {
+          "date": "2021-11-15",
+          "position": 6,
+          "statement": "如果能把兴趣变成副业，值得尝试。",
+          "context": "看到朋友副业成功后的心动",
+          "confidence": 5,
+          "source": "思考笔记"
+        },
+        {
+          "date": "2022-09-01",
+          "position": 7,
+          "statement": "副业不仅是收入补充，更是职业安全感的来源。",
+          "context": "经历裁员风波后的感悟",
+          "confidence": 7,
+          "source": "博客"
+        },
+        {
+          "date": "2023-12-20",
+          "position": 8,
+          "statement": "从副业中看到了独立创业的可能性，正在为转型做准备。",
+          "context": "副业收入超过主业50%后的决策",
+          "confidence": 8,
+          "source": "个人复盘"
+        },
+        {
+          "date": "2024-06-01",
+          "position": 9,
+          "statement": "一人公司模式正在兴起，技术和平台让个体创业门槛大幅降低。",
+          "context": "实践一人公司模式半年后的认识",
+          "confidence": 9,
+          "source": "行业分享"
+        }
+      ],
+      "tags": ["创业", "职业", "财务自由"]
+    }
+  ]
+}

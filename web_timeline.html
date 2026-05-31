@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>观点演变时间线</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <nav class="bg-amber-700 text-white p-4 shadow-lg">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <h1 class="text-xl font-bold"><i class="fa fa-clock-o mr-2"></i>观点演变时间线</h1>
+            <div class="space-x-4 text-sm">
+                <button onclick="showTab('timeline')" class="tab-btn px-3 py-1 rounded bg-amber-500">时间线</button>
+                <button onclick="showTab('add')" class="tab-btn px-3 py-1 rounded hover:bg-amber-500"><i class="fa fa-plus"></i> 添加节点</button>
+                <button onclick="showTab('compare')" class="tab-btn px-3 py-1 rounded hover:bg-amber-500"><i class="fa fa-balance-scale"></i> 对比分析</button>
+                <button onclick="showTab('analysis')" class="tab-btn px-3 py-1 rounded hover:bg-amber-500">分析面板</button>
+                <button onclick="showTab('export')" class="tab-btn px-3 py-1 rounded hover:bg-amber-500"><i class="fa fa-download"></i> 导出</button>
+            </div>
+        </div>
+    </nav>
+    <div class="max-w-6xl mx-auto p-4">
+        <!-- 时间线Tab -->
+        <div id="tab-timeline" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow p-4">
+                        <h4 class="font-bold text-sm mb-3"><i class="fa fa-user mr-1 text-amber-600"></i>选择人物</h4>
+                        <div id="personList" class="space-y-2"></div>
+                    </div>
+                </div>
+                <div class="lg:col-span-3">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold"><i class="fa fa-list-alt mr-2 text-amber-600"></i><span id="currentPersonName">观点时间线</span></h3>
+                            <div class="text-sm text-gray-500"><span id="nodeCount">0</span> 个节点</div>
+                        </div>
+                        <div id="timelineContainer" class="relative">
+                            <div id="timelineLine" class="absolute left-6 top-0 bottom-0 w-0.5 bg-amber-300"></div>
+                            <div id="timelineNodes" class="space-y-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加节点Tab -->
+        <div id="tab-add" class="tab-content hidden">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="font-bold mb-4"><i class="fa fa-plus-circle mr-2 text-amber-600"></i>添加观点节点</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">选择人物</label>
+                            <select id="addPerson" class="w-full border rounded p-2"></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">年份</label>
+                            <input type="number" id="addYear" class="w-full border rounded p-2" value="2026" min="2000" max="2030">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">观点内容</label>
+                            <textarea id="addContent" rows="3" class="w-full border rounded p-2" placeholder="描述该年份的观点/认知状态..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">转变原因（可选）</label>
+                            <textarea id="addReason" rows="2" class="w-full border rounded p-2" placeholder="是什么导致了观点的变化..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">溯源链接（可选）</label>
+                            <input type="url" id="addSourceUrl" class="w-full border rounded p-2" placeholder="原始来源链接，如文章/推文/访谈URL...">
+                        </div>
+                        <button onclick="addNode()" class="w-full bg-amber-600 text-white py-3 rounded-lg hover:bg-amber-700"><i class="fa fa-save mr-2"></i>保存节点</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow p-6 mt-6">
+                    <h3 class="font-bold mb-4"><i class="fa fa-user-plus mr-2 text-amber-600"></i>新建人物</h3>
+                    <div class="flex gap-3">
+                        <input type="text" id="newPersonName" class="flex-1 border rounded p-2" placeholder="输入人物名称">
+                        <button onclick="addPerson()" class="bg-amber-600 text-white px-6 py-2 rounded hover:bg-amber-700">创建</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 多人对比分析Tab -->
+        <div id="tab-compare" class="tab-content hidden">
+            <div class="bg-white rounded-xl shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold"><i class="fa fa-balance-scale mr-2 text-amber-600"></i>多人观点演变对比</h3>
+                    <div>
+                        <button onclick="refreshCompare()" class="bg-amber-600 text-white px-3 py-1.5 rounded text-xs hover:bg-amber-700"><i class="fa fa-refresh mr-1"></i>刷新</button>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mb-4">选择2-4个人物，在同一时间轴上对比他们的观点演变轨迹。</p>
+                <div class="flex flex-wrap gap-3 mb-6" id="comparePersonSelect"></div>
+                <div id="compareChart" class="relative" style="min-height:400px">
+                    <div class="text-center text-gray-400 py-20">请选择至少2个人物进行对比分析</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分析面板Tab -->
+        <div id="tab-analysis" class="tab-content hidden">
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h3 class="font-bold"><i class="fa fa-bar-chart mr-2 text-amber-600"></i>分析面板</h3>
+                        <select id="analysisPerson" onchange="renderAnalysis()" class="border rounded p-2 text-sm"></select>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="analysisStats"></div>
+                    <div id="analysisTransitions" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导出Tab -->
+        <div id="tab-export" class="tab-content hidden">
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold"><i class="fa fa-file-text-o mr-2 text-amber-600"></i>导出Markdown</h3>
+                        <button onclick="copyExport()" class="bg-amber-600 text-white px-4 py-2 rounded text-sm hover:bg-amber-700"><i class="fa fa-copy mr-1"></i>复制</button>
+                    </div>
+                    <pre id="exportPreview" class="bg-gray-50 p-4 rounded text-sm whitespace-pre-wrap font-mono text-gray-700 max-h-96 overflow-y-auto"></pre>
+                    <div class="mt-4">
+                        <label class="block text-sm text-gray-600 mb-1">选择导出人物</label>
+                        <select id="exportPerson" onchange="renderExport()" class="border rounded p-2 text-sm"></select>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow p-6 mt-6">
+                    <h3 class="font-bold mb-4"><i class="fa fa-share-alt mr-2 text-amber-600"></i>分享时间线</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <button onclick="generateShareLink()" class="bg-amber-600 text-white px-4 py-2 rounded text-sm hover:bg-amber-700 w-full"><i class="fa fa-link mr-1"></i>生成分享链接</button>
+                            <div id="shareLinkPanel" class="hidden mt-3 p-3 bg-gray-50 rounded-lg">
+                                <input type="text" id="shareLinkInput" class="w-full border rounded p-2 text-sm text-gray-600" readonly>
+                                <button onclick="copyShareLink()" class="mt-2 bg-indigo-600 text-white px-3 py-1 rounded text-xs hover:bg-indigo-700"><i class="fa fa-copy mr-1"></i>复制链接</button>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t">
+                            <button onclick="exportAsImage()" class="bg-emerald-600 text-white px-4 py-2 rounded text-sm hover:bg-emerald-700 w-full"><i class="fa fa-image mr-1"></i>一键下载时间线图片</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <script>
+        const DEMO_PERSONS = {
+            '我对AI的看法变化': [
+                { year: 2018, content: 'AI只是高级工具，离普通人太远，不太可能影响我的工作。', reason: '当时AI应用主要集中在工业领域', sourceUrl: '' },
+                { year: 2020, content: 'AI开始在内容推荐和语音助手领域普及，开始关注但仍有距离感。', reason: '抖音推荐算法和智能音箱的普及', sourceUrl: '' },
+                { year: 2022, content: 'AI绘画和ChatGPT出现，感到震撼。意识到AI将深刻改变创意工作。', reason: 'Stable Diffusion和ChatGPT发布', sourceUrl: 'https://openai.com/blog/chatgpt' },
+                { year: 2023, content: '深度使用AI工具后，认为AI不是替代人类，而是能力放大器。开始学习Prompt Engineering。', reason: '大量实践AI辅助写作和编程', sourceUrl: '' },
+                { year: 2024, content: 'AI Agent和多模态模型爆发，认为未来2-3年AI会将白领工作效率提升10倍。', reason: 'Claude、GPT-4V等新模型发布', sourceUrl: '' }
+            ],
+            '王兴的创业认知进化': [
+                { year: 2005, content: '社交是互联网的未来，校内网应该专注大学生市场。', reason: '受到Facebook启发', sourceUrl: '' },
+                { year: 2007, content: '中国互联网用户基数大，任何细分市场都有足够空间。', reason: '饭否创业经历', sourceUrl: '' },
+                { year: 2010, content: '团购是O2O的最佳切入点，千团大战本质是执行力的竞争。', reason: '美团创立', sourceUrl: '' },
+                { year: 2015, content: '互联网下半场，要从轻资产转向重资产，建立护城河。', reason: '美团合并大众点评后的战略调整', sourceUrl: '' },
+                { year: 2020, content: '长期主义比短期增长更重要，亏损换规模的时代结束了。', reason: '美团上市后面对监管和竞争的新思考', sourceUrl: '' }
+            ],
+            'Ray Dalio的经济观演变': [
+                { year: 2008, content: '债务危机是经济周期的核心驱动力，去杠杆化需要平衡的艺术。', reason: '金融危机验证了他的债务周期理论', sourceUrl: '' },
+                { year: 2012, content: '长期债务周期进入末期，央行宽松政策将导致资产泡沫。', reason: '欧洲债务危机和量化宽松', sourceUrl: '' },
+                { year: 2016, content: '民粹主义崛起是全球贫富差距扩大的结果，社会矛盾将加剧。', reason: '英国脱欧和特朗普当选', sourceUrl: '' },
+                { year: 2020, content: '全球面临范式转移，债务货币化将成为新常态。', reason: '疫情后的超大规模刺激政策', sourceUrl: '' },
+                { year: 2023, content: '中美冲突和AI革命将重塑全球经济格局，分散投资比以往更重要。', reason: '地缘政治紧张和技术变革', sourceUrl: '' }
+            ],
+            '我对远程办公的态度转变': [
+                { year: 2019, content: '远程办公不靠谱，团队协作效率肯定下降。', reason: '传统办公文化根深蒂固', sourceUrl: '' },
+                { year: 2020, content: '远程办公是权宜之计，疫情结束后大家都会回办公室。', reason: '疫情被迫远程办公', sourceUrl: '' },
+                { year: 2021, content: '远程办公确实有优势，节省通勤时间，效率反而提升了。', reason: '适应了远程协作工具', sourceUrl: '' },
+                { year: 2022, content: '混合办公是最佳模式，关键不是在哪办公，而是如何协作。', reason: '深入使用飞书/Notion等工具', sourceUrl: '' },
+                { year: 2023, content: '完全远程+异步协作是未来，优秀人才不会为了地理位置妥协。', reason: '亲身体验远程团队的高效运作', sourceUrl: '' }
+            ],
+            '我对投资理财的认知变化': [
+                { year: 2018, content: '存银行最安全，股票是赌博，基金也可能亏。', reason: '刚毕业，对金融了解有限', sourceUrl: '' },
+                { year: 2019, content: '定投指数基金是普通人最好的投资方式，开始尝试。', reason: '阅读《指数基金投资指南》', sourceUrl: '' },
+                { year: 2020, content: '疫情暴跌是绝佳买入机会，逆向投资才是超额收益的来源。', reason: '疫情抄底获得正反馈', sourceUrl: '' },
+                { year: 2021, content: '资产配置比选股更重要，股债平衡+再平衡策略。', reason: '经历牛熊转换后的复盘', sourceUrl: '' },
+                { year: 2023, content: '投资最重要的是认知和心态管理，而非技术分析或预测。', reason: '持续学习行为金融学', sourceUrl: '' }
+            ]
+        };
+
+        let persons = JSON.parse(localStorage.getItem('timelinePersons') || 'null') || JSON.parse(JSON.stringify(DEMO_PERSONS));
+        let currentPerson = Object.keys(persons)[0];
+
+        function save() { localStorage.setItem('timelinePersons', JSON.stringify(persons)); }
+
+        function showTab(name) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn px-3 py-1 rounded hover:bg-amber-500');
+            document.getElementById('tab-' + name).classList.remove('hidden');
+            if (name === 'timeline') renderTimeline();
+            if (name === 'analysis') renderAnalysis();
+            if (name === 'export') renderExport();
+            if (name === 'add') populateAddSelects();
+            if (name === 'compare') renderCompareSelect();
+        }
+
+        function populateAddSelects() {
+            const names = Object.keys(persons);
+            ['addPerson','analysisPerson','exportPerson'].forEach(id => {
+                const sel = document.getElementById(id);
+                sel.innerHTML = names.map(n => `<option value="${n}" ${n === currentPerson ? 'selected' : ''}>${n}</option>`).join('');
+            });
+        }
+
+        function renderPersonList() {
+            const list = document.getElementById('personList');
+            list.innerHTML = Object.keys(persons).map(name =>
+                `<div onclick="selectPerson('${name.replace(/'/g, "\\'")}')" class="p-3 rounded-lg cursor-pointer transition ${name === currentPerson ? 'bg-amber-100 border-l-4 border-amber-500 font-medium' : 'bg-gray-50 hover:bg-amber-50 border-l-4 border-transparent'}">
+                    <div class="text-sm">${name}</div>
+                    <div class="text-xs text-gray-500">${persons[name].length} 个节点</div>
+                </div>`
+            ).join('');
+        }
+
+        function selectPerson(name) { currentPerson = name; renderPersonList(); renderTimeline(); }
+
+        function renderTimeline() {
+            document.getElementById('currentPersonName').textContent = currentPerson;
+            const nodes = persons[currentPerson] || [];
+            document.getElementById('nodeCount').textContent = nodes.length;
+            const container = document.getElementById('timelineNodes');
+            if (nodes.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 py-10 pl-12">暂无数据，请先添加观点节点</div>'; return; }
+
+            const sorted = [...nodes].sort((a, b) => a.year - b.year);
+            const transitions = [];
+            for (let i = 1; i < sorted.length; i++) {
+                const prev = sorted[i - 1].content; const curr = sorted[i].content;
+                const common = prev.split('').filter(c => curr.includes(c)).length;
+                const diffRatio = 1 - (common / Math.max(prev.length, curr.length));
+                if (diffRatio > 0.5 && sorted[i].reason) transitions.push(sorted[i].year);
+            }
+
+            container.innerHTML = sorted.map((n, i) => {
+                const isTransition = transitions.includes(n.year);
+                const color = isTransition ? 'border-red-500 bg-red-50' : 'border-amber-300 bg-white';
+                const dotColor = isTransition ? 'bg-red-500' : 'bg-amber-500';
+                const badge = isTransition ? '<span class="inline-block bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded ml-2">观点转变</span>' : '';
+                const sourceHtml = n.sourceUrl ? `<div class="mt-1 text-xs"><i class="fa fa-link text-blue-500 mr-1"></i><a href="${n.sourceUrl}" target="_blank" class="text-blue-600 hover:underline">原始来源</a></div>` : '';
+                return `<div class="relative flex items-start gap-4 pb-6">
+                    <div class="relative z-10 flex-shrink-0 w-12 h-12 rounded-full ${dotColor} flex items-center justify-center text-white font-bold text-sm shadow">${n.year}</div>
+                    <div class="flex-1 p-4 rounded-lg border ${color} shadow-sm">
+                        <div class="text-sm text-gray-700 leading-relaxed">${n.content}</div>
+                        ${n.reason ? `<div class="mt-2 text-xs text-gray-500 flex items-start gap-1"><i class="fa fa-lightbulb-o text-amber-500 mt-0.5"></i>转变原因：${n.reason}</div>` : ''}
+                        ${sourceHtml}
+                        ${badge}
+                        <button onclick="deleteNode(${i})" class="mt-2 text-xs text-red-400 hover:text-red-600"><i class="fa fa-trash"></i> 删除</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function addNode() {
+            const person = document.getElementById('addPerson').value;
+            const year = parseInt(document.getElementById('addYear').value);
+            const content = document.getElementById('addContent').value.trim();
+            const reason = document.getElementById('addReason').value.trim();
+            const sourceUrl = document.getElementById('addSourceUrl').value.trim();
+            if (!content) { alert('请输入观点内容'); return; }
+            if (!persons[person]) persons[person] = [];
+            persons[person].push({ year, content, reason, sourceUrl });
+            save();
+            currentPerson = person;
+            document.getElementById('addContent').value = '';
+            document.getElementById('addReason').value = '';
+            document.getElementById('addSourceUrl').value = '';
+            alert('节点已添加');
+            renderTimeline();
+        }
+
+        function addPerson() {
+            const name = document.getElementById('newPersonName').value.trim();
+            if (!name) { alert('请输入人物名称'); return; }
+            if (persons[name]) { alert('该人物已存在'); return; }
+            persons[name] = [];
+            save();
+            document.getElementById('newPersonName').value = '';
+            currentPerson = name;
+            populateAddSelects();
+            renderPersonList();
+            renderTimeline();
+            alert(`已创建人物 "${name}"`);
+        }
+
+        function deleteNode(idx) {
+            if (!confirm('确定删除该节点？')) return;
+            const nodes = persons[currentPerson];
+            nodes.splice(idx, 1);
+            if (nodes.length === 0) delete persons[currentPerson];
+            save();
+            renderPersonList();
+            renderTimeline();
+        }
+
+        // ============================================================
+        // 多人对比分析
+        // ============================================================
+        const COMPARE_COLORS = ['#dc2626', '#2563eb', '#16a34a', '#d97706', '#7c3aed', '#db2777'];
+
+        function renderCompareSelect() {
+            const container = document.getElementById('comparePersonSelect');
+            const names = Object.keys(persons);
+            container.innerHTML = names.map((n, i) => {
+                const color = COMPARE_COLORS[i % COMPARE_COLORS.length];
+                return `<label class="flex items-center gap-2 px-3 py-2 bg-white border rounded-lg cursor-pointer hover:bg-amber-50" style="border-color:${i < 4 ? color : '#e5e7eb'}">
+                    <input type="checkbox" class="compare-checkbox w-4 h-4 text-amber-600" value="${n}" ${i < 2 ? 'checked' : ''} data-color="${color}">
+                    <span class="text-sm" style="color:${color}">${n}</span>
+                </label>`;
+            }).join('');
+            document.querySelectorAll('.compare-checkbox').forEach(cb => {
+                cb.addEventListener('change', refreshCompare);
+            });
+            refreshCompare();
+        }
+
+        function refreshCompare() {
+            const checked = document.querySelectorAll('.compare-checkbox:checked');
+            const selected = Array.from(checked).map(cb => ({ name: cb.value, color: cb.dataset.color }));
+            const chart = document.getElementById('compareChart');
+
+            if (selected.length < 2) {
+                chart.innerHTML = '<div class="text-center text-gray-400 py-20">请选择至少2个人物进行对比分析</div>';
+                return;
+            }
+
+            // 收集所有年份
+            let allYears = new Set();
+            selected.forEach(s => {
+                (persons[s.name] || []).forEach(n => allYears.add(n.year));
+            });
+            const years = Array.from(allYears).sort((a, b) => a - b);
+            if (years.length === 0) {
+                chart.innerHTML = '<div class="text-center text-gray-400 py-20">所选人物暂无数据</div>';
+                return;
+            }
+
+            const w = chart.offsetWidth || 700;
+            const h = 350;
+            const pad = { top: 40, right: 30, bottom: 50, left: 60 };
+
+            // 绘制对比图
+            let svg = `<svg viewBox="0 0 ${w} ${h}" class="w-full h-full">`;
+
+            // 网格线
+            const gridLines = 5;
+            for (let i = 0; i <= gridLines; i++) {
+                const y = pad.top + (i / gridLines) * (h - pad.top - pad.bottom);
+                svg += `<line x1="${pad.left}" y1="${y}" x2="${w - pad.right}" y2="${y}" stroke="#f1f5f9" stroke-width="1"/>`;
+                const label = Math.round((1 - i / gridLines) * 10);
+                svg += `<text x="${pad.left - 10}" y="${y + 4}" text-anchor="end" fill="#94a3b8" font-size="11">${label}</text>`;
+            }
+
+            // Y轴标签
+            svg += `<text x="15" y="${pad.top + (h - pad.top - pad.bottom) / 2}" text-anchor="middle" fill="#94a3b8" font-size="11" transform="rotate(-90, 15, ${pad.top + (h - pad.top - pad.bottom) / 2})">观点变化强度</text>`;
+
+            // 绘制每个人物的轨迹
+            selected.forEach((s, si) => {
+                const nodes = persons[s.name] || [];
+                if (nodes.length < 2) return;
+                const sorted = [...nodes].sort((a, b) => a.year - b.year);
+
+                // 计算每年的变化强度
+                const points = sorted.map((n, i) => {
+                    let intensity = 1;
+                    if (i > 0) {
+                        const prev = sorted[i - 1].content;
+                        const curr = n.content;
+                        const common = prev.split('').filter(c => curr.includes(c)).length;
+                        const diffRatio = 1 - (common / Math.max(prev.length, curr.length));
+                        intensity = Math.max(1, Math.round(diffRatio * 10));
+                    }
+                    const yearIdx = years.indexOf(n.year);
+                    const x = pad.left + (yearIdx / Math.max(years.length - 1, 1)) * (w - pad.left - pad.right);
+                    const y = h - pad.bottom - (intensity / 10) * (h - pad.top - pad.bottom);
+                    return { x, y, node: n, intensity };
+                });
+
+                if (points.length > 1) {
+                    // 画线
+                    let path = '';
+                    points.forEach((p, i) => { path += (i === 0 ? 'M' : 'L') + p.x.toFixed(0) + ',' + p.y.toFixed(0); });
+                    svg += `<polyline points="${path.slice(1).split('L').join(' ')}" fill="none" stroke="${s.color}" stroke-width="2.5" stroke-linejoin="round" opacity="0.8"/>`;
+
+                    // 画点
+                    points.forEach((p, i) => {
+                        svg += `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${s.color}" stroke="white" stroke-width="2"/>`;
+                        // 年份标签
+                        svg += `<text x="${p.x}" y="${h - 10}" text-anchor="middle" fill="#94a3b8" font-size="9">${p.node.year}</text>`;
+                    });
+
+                    // 人物标签
+                    const lastP = points[points.length - 1];
+                    svg += `<text x="${lastP.x + 10}" y="${lastP.y + 4}" fill="${s.color}" font-size="12" font-weight="bold">${s.name}</text>`;
+                }
+            });
+
+            // X轴年份
+            years.forEach((y, i) => {
+                const x = pad.left + (i / Math.max(years.length - 1, 1)) * (w - pad.left - pad.right);
+                svg += `<text x="${x}" y="${h - pad.bottom + 18}" text-anchor="middle" fill="#64748b" font-size="11">${y}</text>`;
+            });
+
+            // X轴标题
+            svg += `<text x="${(w) / 2}" y="${h - 5}" text-anchor="middle" fill="#94a3b8" font-size="11">年份</text>`;
+
+            svg += '</svg>';
+
+            // 底部对比说明
+            let legendHtml = '<div class="mt-4 flex flex-wrap gap-4 text-sm">';
+            selected.forEach(s => {
+                const nodes = persons[s.name] || [];
+                const sorted = [...nodes].sort((a, b) => a.year - b.year);
+                const span = sorted.length >= 2 ? sorted[sorted.length - 1].year - sorted[0].year : 0;
+                let transitions = 0;
+                for (let i = 1; i < sorted.length; i++) {
+                    const prev = sorted[i-1].content; const curr = sorted[i].content;
+                    const common = prev.split('').filter(c => curr.includes(c)).length;
+                    if (1 - (common / Math.max(prev.length, curr.length)) > 0.5) transitions++;
+                }
+                legendHtml += `<div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full" style="background:${s.color}"></span><span class="font-medium">${s.name}</span><span class="text-gray-500">(${sorted.length}个节点, ${transitions}次转变, ${span}年跨度)</span></div>`;
+            });
+            legendHtml += '</div>';
+
+            // 观点对比表格
+            let tableHtml = '<div class="mt-4 overflow-x-auto"><table class="w-full text-sm border-collapse"><thead><tr class="bg-gray-100">';
+            tableHtml += '<th class="p-2 border text-xs">年份</th>';
+            selected.forEach(s => { tableHtml += `<th class="p-2 border text-xs" style="color:${s.color}">${s.name}</th>`; });
+            tableHtml += '</tr></thead><tbody>';
+            years.forEach(y => {
+                tableHtml += '<tr>';
+                tableHtml += `<td class="p-2 border font-medium text-xs text-center">${y}</td>`;
+                selected.forEach(s => {
+                    const nodes = persons[s.name] || [];
+                    const node = nodes.find(n => n.year === y);
+                    tableHtml += `<td class="p-2 border text-xs">${node ? node.content : '-'}</td>`;
+                });
+                tableHtml += '</tr>';
+            });
+            tableHtml += '</tbody></table></div>';
+
+            chart.innerHTML = svg + legendHtml + tableHtml;
+        }
+
+        // ============================================================
+        // 分析面板
+        // ============================================================
+        function renderAnalysis() {
+            const name = document.getElementById('analysisPerson').value || currentPerson;
+            const nodes = persons[name] || [];
+            const sorted = [...nodes].sort((a, b) => a.year - b.year);
+            if (sorted.length === 0) {
+                document.getElementById('analysisStats').innerHTML = '<div class="col-span-4 text-center text-gray-400 py-8">暂无数据</div>';
+                document.getElementById('analysisTransitions').innerHTML = '';
+                return;
+            }
+
+            let transitions = 0;
+            for (let i = 1; i < sorted.length; i++) {
+                const prev = sorted[i - 1].content; const curr = sorted[i].content;
+                const common = prev.split('').filter(c => curr.includes(c)).length;
+                if (1 - (common / Math.max(prev.length, curr.length)) > 0.5) transitions++;
+            }
+            const years = sorted.map(n => n.year);
+            const span = years[years.length - 1] - years[0];
+            const avgDuration = totalNodes > 1 ? (span / (totalNodes - 1)).toFixed(1) : '-';
+            const totalNodes = sorted.length;
+            const hasSources = sorted.filter(n => n.sourceUrl).length;
+
+            document.getElementById('analysisStats').innerHTML = `
+                <div class="bg-amber-50 rounded-xl p-4 text-center"><div class="text-gray-500 text-xs">总观点数</div><div class="text-2xl font-bold text-amber-700">${totalNodes}</div></div>
+                <div class="bg-red-50 rounded-xl p-4 text-center"><div class="text-gray-500 text-xs">转变次数</div><div class="text-2xl font-bold text-red-600">${transitions}</div></div>
+                <div class="bg-blue-50 rounded-xl p-4 text-center"><div class="text-gray-500 text-xs">时间跨度</div><div class="text-2xl font-bold text-blue-600">${span}年</div></div>
+                <div class="bg-green-50 rounded-xl p-4 text-center"><div class="text-gray-500 text-xs">有来源节点</div><div class="text-2xl font-bold text-green-600">${hasSources}</div></div>
+            `;
+
+            const transHtml = transitions === 0 ? '<div class="text-gray-400 text-center py-4">未检测到明显观点转变</div>' :
+                sorted.slice(1).map((n, i) => {
+                    const prev = sorted[i].content; const curr = n.content;
+                    const common = prev.split('').filter(c => curr.includes(c)).length;
+                    if (1 - (common / Math.max(prev.length, curr.length)) <= 0.5) return '';
+                    const sourceHtml = n.sourceUrl ? ` <a href="${n.sourceUrl}" target="_blank" class="text-blue-500 underline text-xs ml-1">[来源]</a>` : '';
+                    return `<div class="p-4 bg-red-50 rounded-lg border-l-4 border-red-500"><div class="text-sm font-medium text-red-700">${sorted[i].year} → ${n.year} 观点转变</div><div class="text-xs text-gray-600 mt-1">从「${prev.slice(0, 30)}...」转变为「${curr.slice(0, 30)}...」</div>${n.reason ? `<div class="text-xs text-gray-500 mt-1"><i class="fa fa-lightbulb-o mr-1 text-amber-500"></i>${n.reason}${sourceHtml}</div>` : ''}</div>`;
+                }).filter(Boolean).join('') || '<div class="text-gray-400 text-center py-4">未检测到明显观点转变</div>';
+
+            document.getElementById('analysisTransitions').innerHTML = transHtml;
+        }
+
+        function renderExport() {
+            const name = document.getElementById('exportPerson')?.value || currentPerson;
+            const nodes = persons[name] || [];
+            if (nodes.length === 0) { document.getElementById('exportPreview').textContent = '暂无数据'; return; }
+            const sorted = [...nodes].sort((a, b) => a.year - b.year);
+            let md = `# ${name} 的观点演变时间线\n\n`;
+            md += `> 总观点数：${sorted.length} | 时间跨度：${sorted[sorted.length-1].year - sorted[0].year}年\n\n`;
+            md += `| 年份 | 观点 | 转变原因 | 来源链接 |\n|------|------|----------|----------|\n`;
+            sorted.forEach(n => md += `| ${n.year} | ${n.content} | ${n.reason || '-'} | ${n.sourceUrl || '-'} |\n`);
+            md += `\n---\n*由观点演变时间线工具生成*`;
+            document.getElementById('exportPreview').textContent = md;
+        }
+
+        function copyExport() {
+            const text = document.getElementById('exportPreview').textContent;
+            navigator.clipboard.writeText(text).then(() => alert('已复制到剪贴板')).catch(() => {
+                const ta = document.createElement('textarea'); ta.value = text;
+                document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+                document.body.removeChild(ta); alert('已复制到剪贴板');
+            });
+        }
+
+        function generateShareLink() {
+            const name = document.getElementById('exportPerson')?.value || currentPerson;
+            const nodes = persons[name] || [];
+            if (nodes.length === 0) { alert('该人物暂无数据，无法生成分享链接'); return; }
+            const data = { name, nodes };
+            try {
+                const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+                const url = window.location.origin + window.location.pathname + '?data=' + encoded;
+                document.getElementById('shareLinkInput').value = url;
+                document.getElementById('shareLinkPanel').classList.remove('hidden');
+            } catch(e) { alert('数据编码失败，请稍后重试'); }
+        }
+
+        function copyShareLink() {
+            const input = document.getElementById('shareLinkInput');
+            if (!input.value) return;
+            navigator.clipboard.writeText(input.value).then(() => addToast('分享链接已复制到剪贴板')).catch(() => { input.select(); document.execCommand('copy'); addToast('分享链接已复制到剪贴板'); });
+        }
+
+        function loadShareData() {
+            const params = new URLSearchParams(window.location.search);
+            const dataParam = params.get('data');
+            if (!dataParam) return false;
+            try {
+                const json = decodeURIComponent(atob(dataParam)); const data = JSON.parse(json);
+                if (data.name && data.nodes && Array.isArray(data.nodes)) {
+                    persons[data.name] = data.nodes; currentPerson = data.name; save();
+                    populateAddSelects(); renderPersonList(); renderTimeline();
+                    addToast('已加载分享的时间线数据'); return true;
+                }
+            } catch(e) { console.warn('分享数据加载失败', e); }
+            return false;
+        }
+
+        function exportAsImage() {
+            const name = document.getElementById('exportPerson')?.value || currentPerson;
+            const nodes = persons[name] || [];
+            if (nodes.length === 0) { alert('该人物暂无数据，无法导出图片'); return; }
+            const container = document.createElement('div');
+            container.style.cssText = 'background:#f8fafc;padding:30px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;';
+            container.innerHTML = '<h2 style="text-align:center;color:#92400e;font-size:24px;margin-bottom:20px;">' + escapeHtml(name) + ' 的观点演变时间线</h2>';
+            const sorted = [...nodes].sort((a, b) => a.year - b.year);
+            sorted.forEach((n, i) => {
+                const color = i % 2 === 0 ? '#fffbeb' : '#fff';
+                container.innerHTML += '<div style="background:' + color + ';border-left:4px solid #d97706;border-radius:8px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);"><div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;"><span style="background:#d97706;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;">' + n.year + '</span><span style="font-weight:500;color:#1e293b;">' + escapeHtml(n.content) + '</span></div>' + (n.reason ? '<div style="font-size:13px;color:#78716c;margin-left:48px;"><span style="color:#d97706;">转变原因：</span>' + escapeHtml(n.reason) + '</div>' : '') + (n.sourceUrl ? '<div style="font-size:12px;color:#3b82f6;margin-left:48px;margin-top:4px;">来源：' + escapeHtml(n.sourceUrl) + '</div>' : '') + '</div>';
+            });
+            container.innerHTML += '<div style="text-align:center;color:#a8a29e;font-size:12px;margin-top:16px;">由观点演变时间线工具生成</div>';
+            document.body.appendChild(container);
+            if (typeof html2canvas !== 'undefined') {
+                html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#f8fafc' }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = name + '_时间线_' + new Date().toISOString().slice(0, 10) + '.png';
+                    link.href = canvas.toDataURL('image/png'); link.click();
+                    document.body.removeChild(container); addToast('时间线图片已下载');
+                }).catch(err => { document.body.removeChild(container); alert('导出图片失败：' + err.message); });
+            } else { document.body.removeChild(container); alert('html2canvas库未加载，请刷新页面重试'); }
+        }
+
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+        function addToast(msg) {
+            const el = document.createElement('div');
+            el.className = 'fixed bottom-6 right-6 bg-slate-800 text-white px-5 py-3 rounded-lg shadow-lg text-sm z-50';
+            el.textContent = msg; document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2500);
+        }
+
+        const hasShareData = loadShareData();
+        if (!hasShareData) { populateAddSelects(); renderPersonList(); renderTimeline(); }
+    </script>
+</body>
+</html>
